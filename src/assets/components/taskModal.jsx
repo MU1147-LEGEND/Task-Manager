@@ -13,7 +13,7 @@ const TaskModal = ({ changeModalState, keyChange, handeSubmit }) => {
             <section onClick={changeModalState} id="modal" className="dark:text-white absolute bg-slate-500/60 dark:bg-slate-300/60 top-0 left-0 h-full w-full flex items-center justify-center z-[999]">
                 <div onClick={(e) => { e.stopPropagation() }} className="modal-content bg-stone-300 dark:bg-zinc-800 lg:h-2/3 h-3/4 lg:w-1/2 w-4/5 rounded-lg p-5 relative">
                     {/* close button */}
-                    <button onClick={changeModalState} className="absolute top-5 right-5 ring ring-stone-500 dark:ring-orange-700 dark:hover:bg-orange-700 hover:bg-stone-500 hover:text-white p-2 rounded-full transition-all duration-300 hover:-translate-y-1">
+                    <button onClick={changeModalState} className="absolute top-5 right-5 ring-1 ring-stone-500 dark:ring-orange-700 dark:hover:bg-orange-700 hover:bg-stone-500 hover:text-white p-2 rounded-full transition-all duration-300 hover:-translate-y-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="lg:h-8 h-6 lg:w-8 w-6"
@@ -30,8 +30,8 @@ const TaskModal = ({ changeModalState, keyChange, handeSubmit }) => {
 
                     {/* modal contents for task */}
                     <h3 className="text-center lg:text-2xl text-xl font-semibold ">Create Your Task List</h3>
-                    <div className="inputs flex flex-col py-10 lg:py-3 gap-10 lg:gap-7">
-                        <form onSubmit={(e)=>{e.preventDefault(); handeSubmit();}}>
+                    <div className="inputs">
+                        <form onSubmit={(e)=>{e.preventDefault(); handeSubmit();}} className="flex flex-col py-10 lg:py-3 gap-10 lg:gap-7">
                             <div className="title flex flex-col">
                                 <label htmlFor="title">Title</label>
                                 <input onChange={(e) => { keyChange(e) }} type="text" id="title" name="title" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" required />
