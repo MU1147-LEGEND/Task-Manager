@@ -47,7 +47,7 @@ const TaskModal = ({ changeModalState, keyChange, handeSubmit }) => {
                             </div>
                             <div className="priority flex flex-col">
                                 <label htmlFor="priority">Priority</label>
-                                <select onChange={(e) => { keyChange(e) }} name="priority" id="priority" className="focus:outline-none bg-inherit lg:w-2/3 border-none appearance-none pt-2 " required>
+                                <select onChange={(e) => { keyChange(e) }} name="priority" id="priority" className="focus:outline-none bg-inherit lg:w-2/3 border-none appearance-none pt-2 px-4" required>
                                     <option value="" className="bg-stone-300 dark:bg-zinc-800">Select Option</option>
                                     <option value="low" className="bg-stone-300 dark:bg-zinc-800">Low</option>
                                     <option value="medium" className="bg-stone-300 dark:bg-zinc-800 ">Medium</option>
