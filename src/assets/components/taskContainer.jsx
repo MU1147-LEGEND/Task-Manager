@@ -2,22 +2,24 @@
 import { useState } from "react"
 import TaskModal from "./taskModal"
 import NoTask from "./noTaskFound";
+import { toast } from "react-toastify";
 
 const TaskContainer = ({ tasks, setTasks }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [task, setTask] = useState({
+    const defaultTask = {
         id: crypto.randomUUID(),
         title: "",
         description: "",
         tags: [],
         priority: "",
         isFavourite: false,
-    });
+    }
+    const [task, setTask] = useState(defaultTask);
 
     const changeModalState = () => {
         setIsModalOpen(!isModalOpen);
     }
-
+    
     const onChange = (e) => {
         let name = e.target.name;
         let value = e.target.value;
@@ -30,11 +32,15 @@ const TaskContainer = ({ tasks, setTasks }) => {
         });
     }
 
-    const handeSubmit = () => {
-        setTasks([...tasks, task]);
-
-        setIsModalOpen(!isModalOpen);
+    function warningTst(arg){
+        toast.warning(`${arg} is required!`, {
+            position:"top-center",
+            pauseOnFocusLoss: false,
+            pauseOnHover: false,
+        });
     }
+
+    
 
     return (
         <>
@@ -43,7 +49,7 @@ const TaskContainer = ({ tasks, setTasks }) => {
                     <h2 className="text-2xl lg:text-3xl dark:text-yellow-400 text-center font-semibold my-4">Create Your Task List</h2>
 
                     {/* task lists */}
-                    <div className="tasks lg:w-4/5 w-[90%] lg:h-[22rem] h-[30rem] overflow-auto bg-black/20 rounded-t-lg dark:bg-black/40 dark:text-white transition-all duration-500 relative">
+                    <div className="tasks lg:w-4/5 w-[90%] lg:h-[22rem] h-[26rem] overflow-auto bg-black/20 rounded-t-lg dark:bg-black/40 dark:text-white transition-all duration-500 relative">
                         <table className="w-full">
                             <thead className="sticky top-0 z-10">
                                 <tr className="flex justify-around bg-slate-400 dark:bg-slate-600 py-4 text-lg rounded-t-lg tracking-wider">
@@ -61,13 +67,13 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                         <td className="md:-ml-16">{task.title}</td>
                                         <td className="w-16 lg:w-auto">{task.description}</td>
                                         <td className="w-16 lg:w-auto">
-                                        <ul>
-                                                {task.tags.map((tag) =>
-                                                    ( <li key={crypto.randomUUID()}>{tag}</li> )
+                                            <ul>
+                                                {task?.tags?.map((tag) =>
+                                                    (<li key={crypto.randomUUID()} className="inline bg-blue-500 hover:bg-blue-700 cursor-default mx-1 p-1 rounded-xl">{tag}</li>)
                                                 )}
                                             </ul>
                                         </td>
-                                        <td className="">{task.priority}</td>
+                                        <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
                                     </tr>
                                 )) : <NoTask />}
                             </tbody>
@@ -77,13 +83,13 @@ const TaskContainer = ({ tasks, setTasks }) => {
                     {/* add delete button */}
                     <div className="buttons lg:w-4/5 w-[90%] m-auto bg-black/20 dark:bg-black/40 dark:text-white rounded-b-lg p-4 space-x-4">
                         <button onClick={changeModalState} className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-all duration-300">Add Task</button>
-                        <button className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300">Delete All</button>
+                        <button onClick={() => { setTasks([]) }} className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300">Delete All</button>
                     </div>
                 </div>
 
             </section>
             {/* open and close modal dynamically */}
-            {isModalOpen && <TaskModal changeModalState={changeModalState} keyChange={onChange} handeSubmit={handeSubmit} />}
+            {isModalOpen && <TaskModal isModalOpen={isModalOpen} changeModalState={changeModalState} keyChange={onChange} handeSubmit={handeSubmit} />}
         </>
     )
 }

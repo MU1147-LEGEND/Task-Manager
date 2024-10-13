@@ -1,12 +1,8 @@
+/* eslint-disable no-unused-vars */
+import { useEffect } from "react";
+
 /* eslint-disable react/prop-types */
-const TaskModal = ({ changeModalState, keyChange, handeSubmit }) => {
-
-    const formValidation = ()=>{
-        const errors = {};
-        // if()
-
-        return errors;
-    }
+const TaskModal = ({isModalOpen, changeModalState, keyChange, handeSubmit }) => {
 
     return (
         <>
@@ -31,32 +27,36 @@ const TaskModal = ({ changeModalState, keyChange, handeSubmit }) => {
                     {/* modal contents for task */}
                     <h3 className="text-center lg:text-2xl text-xl font-semibold ">Create Your Task List</h3>
                     <div className="inputs">
-                        <form onSubmit={(e)=>{e.preventDefault(); handeSubmit();}} className="flex flex-col py-10 lg:py-3 gap-10 lg:gap-7">
+                        <form onSubmit={(e) => { e.preventDefault(); handeSubmit(); }} className="flex flex-col py-10 lg:py-3 gap-10 lg:gap-7">
                             <div className="title flex flex-col">
                                 <label htmlFor="title">Title</label>
-                                <input onChange={(e) => { keyChange(e) }} type="text" id="title" name="title" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" required />
+                                <input onChange={(e) => { keyChange(e) }}
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" />
                             </div>
                             <div className="description flex flex-col">
                                 <label htmlFor="description">Description</label>
-                                <textarea onChange={(e) => { keyChange(e) }} type="text" cols={1} rows={1} id="description" name="description" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" required>
+                                <textarea onChange={(e) => { keyChange(e) }} type="text" cols={1} rows={1} id="description" name="description" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" >
                                 </textarea>
                             </div>
                             <div className="tags flex flex-col">
                                 <label htmlFor="tags">Tags</label>
-                                <input onChange={(e) => { keyChange(e) }} type="text" id="tags" name="tags" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" required/>
+                                <input onChange={(e) => { keyChange(e) }} type="text" id="tags" name="tags" className="focus:outline-none bg-inherit border-b-2 lg:w-2/3 border-black dark:border-white" />
                             </div>
                             <div className="priority flex flex-col">
                                 <label htmlFor="priority">Priority</label>
-                                <select onChange={(e) => { keyChange(e) }} name="priority" id="priority" className="focus:outline-none bg-inherit lg:w-2/3 border-none appearance-none pt-2 px-4" required>
+                                <select onChange={(e) => { keyChange(e) }} name="priority" id="priority" className="focus:outline-none bg-inherit lg:w-2/3 border-none appearance-none pt-2 px-4" >
                                     <option value="" className="bg-stone-300 dark:bg-zinc-800">Select Option</option>
-                                    <option value="low" className="bg-stone-300 dark:bg-zinc-800">Low</option>
-                                    <option value="medium" className="bg-stone-300 dark:bg-zinc-800 ">Medium</option>
-                                    <option value="high" className="bg-stone-300 dark:bg-zinc-800">High</option>
+                                    <option value="Low" className="bg-stone-300 dark:bg-zinc-800">Low</option>
+                                    <option value="Medium" className="bg-stone-300 dark:bg-zinc-800 ">Medium</option>
+                                    <option value="High" className="bg-stone-300 dark:bg-zinc-800">High</option>
                                 </select>
                             </div>
                             <div className="buttons flex items-center justify-around absolute bottom-4 left-0 right-0">
                                 <button onClick={changeModalState} className="bg-red-600 text-white py-2 px-5 rounded-lg hover:bg-red-700 transition-all duration-300">Close</button>
-                                <button type="submit"  className="bg-blue-600 text-white py-2 px-5 rounded-lg hover:bg-blue-800 transition-all duration-300">Save</button>
+                                <button type="submit" className="bg-blue-600 text-white py-2 px-5 rounded-lg hover:bg-blue-800 transition-all duration-300">Save</button>
                             </div>
                         </form>
                     </div>
