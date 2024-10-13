@@ -40,7 +40,34 @@ const TaskContainer = ({ tasks, setTasks }) => {
         });
     }
 
-    
+    const handeSubmit = () => {
+        // form validation
+        if (!task.title ) {
+            warningTst("Title");
+        }else if(!task.description){
+            warningTst("Description");
+        }
+        else if(task.tags.length===0){
+            warningTst("Tags");
+        }
+        else if(task?.tags?.length > 3){
+            toast.warning("Maximum 3 tags are allowed", {
+                position: "top-center",
+                pauseOnFocusLoss: false,
+                pauseOnHover: false,
+            })
+        }
+        else if(!task.priority){
+            warningTst("Priority");
+        }
+        // success validation then do:
+        else{
+            setTasks([...tasks, task]);
+            setIsModalOpen(!isModalOpen);
+            console.log(tasks);
+            setTask(defaultTask);
+        }
+    }
 
     return (
         <>
