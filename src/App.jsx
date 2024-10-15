@@ -10,9 +10,9 @@ const App = () => {
 
   return (
     <>
-    <Header />
+    <Header tasks={tasks} setTasks={setTasks} />
 
-    <TaskContainer tasks={tasks} setTasks={setTasks}/>
+    <TaskContainer tasks={tasks} setTasks={setTasks} />
 
     <Footer/>
     <ToastContainer/>

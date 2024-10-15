@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TaskModal from "./taskModal"
 import NoTask from "./noTaskFound";
 import { toast } from "react-toastify";
@@ -15,10 +15,15 @@ const TaskContainer = ({ tasks, setTasks }) => {
         isFavourite: false,
     }
     const [task, setTask] = useState(defaultTask);
+    const [localTasks] = useState(localStorage.getItem("tasks") || null);
 
     const changeModalState = () => {
         setIsModalOpen(!isModalOpen);
     }
+
+    useEffect(()=>{
+        setTasks([...tasks]);
+    }, [isModalOpen]);
     
     const onChange = (e) => {
         let name = e.target.name;
@@ -40,6 +45,18 @@ const TaskContainer = ({ tasks, setTasks }) => {
         });
     }
 
+    useEffect(()=>{
+        const checkLocal = ()=>{
+            if(localTasks){
+                setTasks(JSON.parse(localTasks));
+            }
+            else{
+                localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
+            }
+        }
+        checkLocal();
+    }, [localTasks]);
+
     const handeSubmit = () => {
         // form validation
         if (!task.title ) {
@@ -55,7 +72,7 @@ const TaskContainer = ({ tasks, setTasks }) => {
                 position: "top-center",
                 pauseOnFocusLoss: false,
                 pauseOnHover: false,
-            })
+            });
         }
         else if(!task.priority){
             warningTst("Priority");
@@ -64,9 +81,30 @@ const TaskContainer = ({ tasks, setTasks }) => {
         else{
             setTasks([...tasks, task]);
             setIsModalOpen(!isModalOpen);
-            console.log(tasks);
-            setTask(defaultTask);
+            // setTask(defaultTask);
+            
+            localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
         }
+    }
+
+
+
+    const deleteAllTasks = ()=>{
+        setTasks([]);
+        localStorage.removeItem("tasks");
+    }
+
+    const deleteTask = (taskId)=>{
+        const afterSingleDelete = tasks.filter((task)=>{
+            return task.id !== taskId;
+        });
+        setTasks(afterSingleDelete);
+        localStorage.setItem("tasks", JSON.stringify(afterSingleDelete));
+    }
+
+    const editTask = (taskId)=>{
+        
+        setIsModalOpen(true);
     }
 
     return (
@@ -83,17 +121,20 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                     <th className="px-4">Title<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
                                     <th className="px-4">Description<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
                                     <th className="px-4">Tags<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
-                                    <th className="px-4">Priority</th>
+                                    <th className="px-4">Priority<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
+                                    <th className="px-4">Options</th>
+
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {tasks.length > 0 ? tasks.map((task, index) => (
-                                    <tr key={crypto.randomUUID()} className="flex justify-evenly py-4 relative text-left">
-                                        <td className="absolute lg:left-4 left-1">{index + 1}.</td>
+                                    <>
+                                    <tr key={task.id} className="flex justify-evenly py-4 relative text-left">
+                                        <td className="">{index + 1}.  </td>
                                         <td className="md:-ml-16">{task.title}</td>
-                                        <td className="w-16 lg:w-auto">{task.description}</td>
-                                        <td className="w-16 lg:w-auto">
+                                        <td className="w-16 lg:w-56">{task.description}</td>
+                                        <td className="w-16 lg:w-56">
                                             <ul>
                                                 {task?.tags?.map((tag) =>
                                                     (<li key={crypto.randomUUID()} className="inline bg-blue-500 hover:bg-blue-700 cursor-default mx-1 p-1 rounded-xl">{tag}</li>)
@@ -101,7 +142,14 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                             </ul>
                                         </td>
                                         <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
+                                        <td className="flex flex-col gap-2">
+                                            <button onClick={()=>{editTask(task.id)}}
+                                            className="bg-indigo-700 hover:bg-indigo-500 px-2 py-1 rounded-md transition-all duration-300">Edit</button>
+                                            <button onClick={()=>{deleteTask(task.id)}}
+                                            className="bg-red-700 hover:bg-red-500 px-2 py-1 rounded-md transition-all duration-300">Delete</button>
+                                        </td>
                                     </tr>
+                                </>
                                 )) : <NoTask />}
                             </tbody>
                         </table>
@@ -110,7 +158,7 @@ const TaskContainer = ({ tasks, setTasks }) => {
                     {/* add delete button */}
                     <div className="buttons lg:w-4/5 w-[90%] m-auto bg-black/20 dark:bg-black/40 dark:text-white rounded-b-lg p-4 space-x-4">
                         <button onClick={changeModalState} className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-all duration-300">Add Task</button>
-                        <button onClick={() => { setTasks([]) }} className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300">Delete All</button>
+                        <button onClick={deleteAllTasks} className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300">Delete All</button>
                     </div>
                 </div>
 
