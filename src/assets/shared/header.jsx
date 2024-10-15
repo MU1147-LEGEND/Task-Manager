@@ -22,11 +22,14 @@ const Header = ({ tasks, setTasks }) => {
     };
 
     useEffect(() => {
-
+        const localTasks = localStorage.getItem("tasks");
+        if(localTasks){
+            setOriginalTasks(JSON.parse(localTasks));
+        }else{
             if (tasks.length > 0 && originalTasks.length === 0) {
                 setOriginalTasks([...tasks]);
             }
-        
+        }
     }, [tasks]);
 
     const handleSearch = (e) => {
