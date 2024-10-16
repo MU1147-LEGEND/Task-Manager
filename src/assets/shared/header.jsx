@@ -49,9 +49,6 @@ const Header = ({ tasks, setTasks }) => {
         }
     }, [search]);
 
-    console.log(tasks);
-
-
     return (
         <>
             <section id="header" className='bg-slate-400 py-4 dark:bg-slate-500 transition-all duration-500'>

@@ -14,11 +14,13 @@ const TaskContainer = ({ tasks, setTasks }) => {
         priority: "",
         isFavourite: false,
     }
-    const [task, setTask] = useState(defaultTask);
+    const [isTaskUpdate, setIstaskUpdate] = useState(null);
+    const [task, setTask] = useState(isTaskUpdate || defaultTask);
     const [localTasks] = useState(localStorage.getItem("tasks") || null);
 
     const changeModalState = () => {
         setIsModalOpen(!isModalOpen);
+        setIstaskUpdate(null);
     }
 
     useEffect(()=>{
@@ -82,12 +84,10 @@ const TaskContainer = ({ tasks, setTasks }) => {
             setTasks([...tasks, task]);
             setIsModalOpen(!isModalOpen);
             // setTask(defaultTask);
-            
+
             localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
         }
     }
-
-
 
     const deleteAllTasks = ()=>{
         setTasks([]);
@@ -102,8 +102,9 @@ const TaskContainer = ({ tasks, setTasks }) => {
         localStorage.setItem("tasks", JSON.stringify(afterSingleDelete));
     }
 
-    const editTask = (taskId)=>{
-        
+    const editTask = (task)=>{
+        console.log(task);
+        setIstaskUpdate(task)
         setIsModalOpen(true);
     }
 
@@ -143,7 +144,7 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                         </td>
                                         <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
                                         <td className="flex flex-col gap-2">
-                                            <button onClick={()=>{editTask(task.id)}}
+                                            <button onClick={()=>{editTask(task)}}
                                             className="bg-indigo-700 hover:bg-indigo-500 px-2 py-1 rounded-md transition-all duration-300">Edit</button>
                                             <button onClick={()=>{deleteTask(task.id)}}
                                             className="bg-red-700 hover:bg-red-500 px-2 py-1 rounded-md transition-all duration-300">Delete</button>
