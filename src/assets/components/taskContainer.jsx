@@ -19,40 +19,29 @@ const TaskContainer = ({ tasks, setTasks }) => {
     const [localTasks] = useState(localStorage.getItem("tasks") || null);
 
     const changeModalState = () => {
-        setIsModalOpen(!isModalOpen);
+        setIsModalOpen(false);
         setIstaskUpdate(null);
+        setTask(defaultTask);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setTasks([...tasks]);
     }, [isModalOpen]);
-    
-    const onChange = (e) => {
-        let name = e.target.name;
-        let value = e.target.value;
-        if (name === "tags") {
-            value = value.split(",");
-        }
-        setTask({
-            ...task,
-            [name]: value,
-        });
-    }
 
-    function warningTst(arg){
+    function warningTst(arg) {
         toast.warning(`${arg} is required!`, {
-            position:"top-center",
+            position: "top-center",
             pauseOnFocusLoss: false,
             pauseOnHover: false,
         });
     }
 
-    useEffect(()=>{
-        const checkLocal = ()=>{
-            if(localTasks){
+    useEffect(() => {
+        const checkLocal = () => {
+            if (localTasks) {
                 setTasks(JSON.parse(localTasks));
             }
-            else{
+            else {
                 localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
             }
         }
@@ -61,51 +50,54 @@ const TaskContainer = ({ tasks, setTasks }) => {
 
     const handeSubmit = () => {
         // form validation
-        if (!task.title ) {
+        if (task.title === "") {
             warningTst("Title");
-        }else if(!task.description){
+        } else if (!task.description) {
             warningTst("Description");
         }
-        else if(task.tags.length===0){
+        else if (task.tags.length === 0) {
             warningTst("Tags");
         }
-        else if(task?.tags?.length > 3){
+        else if (task?.tags?.length > 3) {
             toast.warning("Maximum 3 tags are allowed", {
                 position: "top-center",
                 pauseOnFocusLoss: false,
                 pauseOnHover: false,
             });
         }
-        else if(!task.priority){
+        else if (!task.priority) {
             warningTst("Priority");
         }
         // success validation then do:
-        else{
-            setTasks([...tasks, task]);
-            setIsModalOpen(!isModalOpen);
-            // setTask(defaultTask);
+        else {
+            const updatedTasks = isTaskUpdate
+                ? tasks.map((t) => (t.id === task.id ? task : t))
+                : [...tasks, task];
 
-            localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
+            setTasks(updatedTasks);
+            localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+            setIsModalOpen(!isModalOpen);
+            setTask(defaultTask); //reset the form
         }
     }
 
-    const deleteAllTasks = ()=>{
+    const deleteAllTasks = () => {
         setTasks([]);
         localStorage.removeItem("tasks");
     }
 
-    const deleteTask = (taskId)=>{
-        const afterSingleDelete = tasks.filter((task)=>{
+    const deleteTask = (taskId) => {
+        const afterSingleDelete = tasks.filter((task) => {
             return task.id !== taskId;
         });
         setTasks(afterSingleDelete);
         localStorage.setItem("tasks", JSON.stringify(afterSingleDelete));
     }
 
-    const editTask = (task)=>{
-        console.log(task);
-        setIstaskUpdate(task)
+    const editTask = (task) => {
+        setIstaskUpdate(task);
         setIsModalOpen(true);
+
     }
 
     return (
@@ -124,33 +116,32 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                     <th className="px-4">Tags<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
                                     <th className="px-4">Priority<span className="w-[2px] h-8 bg-black/40 lg:ml-24 ml-3.5 absolute"></span></th>
                                     <th className="px-4">Options</th>
-
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {tasks.length > 0 ? tasks.map((task, index) => (
                                     <>
-                                    <tr key={task.id} className="flex justify-evenly py-4 relative text-left">
-                                        <td className="">{index + 1}.  </td>
-                                        <td className="md:-ml-16">{task.title}</td>
-                                        <td className="w-16 lg:w-56">{task.description}</td>
-                                        <td className="w-16 lg:w-56">
-                                            <ul>
-                                                {task?.tags?.map((tag) =>
-                                                    (<li key={crypto.randomUUID()} className="inline bg-blue-500 hover:bg-blue-700 cursor-default mx-1 p-1 rounded-xl">{tag}</li>)
-                                                )}
-                                            </ul>
-                                        </td>
-                                        <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
-                                        <td className="flex flex-col gap-2">
-                                            <button onClick={()=>{editTask(task)}}
-                                            className="bg-indigo-700 hover:bg-indigo-500 px-2 py-1 rounded-md transition-all duration-300">Edit</button>
-                                            <button onClick={()=>{deleteTask(task.id)}}
-                                            className="bg-red-700 hover:bg-red-500 px-2 py-1 rounded-md transition-all duration-300">Delete</button>
-                                        </td>
-                                    </tr>
-                                </>
+                                        <tr key={task.id} className="flex justify-evenly py-4 relative text-left">
+                                            <td className="">{index + 1}.  </td>
+                                            <td className="md:-ml-16">{task.title}</td>
+                                            <td className="w-16 lg:w-56">{task.description}</td>
+                                            <td className="w-16 lg:w-56">
+                                                <ul>
+                                                    {task?.tags?.map((tag) =>
+                                                        (<li key={crypto.randomUUID()} className="lg:inline-block bg-blue-500 hover:bg-blue-700 cursor-default mx-1 p-1 rounded-xl">{tag}</li>)
+                                                    )}
+                                                </ul>
+                                            </td>
+                                            <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
+                                            <td className="flex flex-col gap-2">
+                                                <button onClick={() => { editTask(task) }}
+                                                    className="bg-indigo-700 hover:bg-indigo-500 px-2 py-1 rounded-md transition-all duration-300">Edit</button>
+                                                <button onClick={() => { deleteTask(task.id) }}
+                                                    className="bg-red-700 hover:bg-red-500 px-2 py-1 rounded-md transition-all duration-300">Delete</button>
+                                            </td>
+                                        </tr>
+                                    </>
                                 )) : <NoTask />}
                             </tbody>
                         </table>
@@ -158,14 +149,17 @@ const TaskContainer = ({ tasks, setTasks }) => {
                     </div>
                     {/* add delete button */}
                     <div className="buttons lg:w-4/5 w-[90%] m-auto bg-black/20 dark:bg-black/40 dark:text-white rounded-b-lg p-4 space-x-4">
-                        <button onClick={changeModalState} className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-all duration-300">Add Task</button>
+                        <button onClick={() => {
+                            setIstaskUpdate(null);
+                            setIsModalOpen(true);
+                        }} className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition-all duration-300">Add Task</button>
                         <button onClick={deleteAllTasks} className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300">Delete All</button>
                     </div>
                 </div>
 
             </section>
             {/* open and close modal dynamically */}
-            {isModalOpen && <TaskModal isModalOpen={isModalOpen} changeModalState={changeModalState} keyChange={onChange} handeSubmit={handeSubmit} />}
+            {isModalOpen && <TaskModal isModalOpen={isModalOpen} changeModalState={changeModalState} handeSubmit={handeSubmit} task={task} setTask={setTask} editTask={isTaskUpdate} />}
         </>
     )
 }
