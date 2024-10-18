@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import TaskModal from "./taskModal"
 import NoTask from "./noTaskFound";
 import { toast } from "react-toastify";
+import AddFavourite from "./addFavourite";
+
 
 const TaskContainer = ({ tasks, setTasks }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,7 +14,7 @@ const TaskContainer = ({ tasks, setTasks }) => {
         description: "",
         tags: [],
         priority: "",
-        isFavourite: false,
+        completed: false,
     }
     const [isTaskUpdate, setIstaskUpdate] = useState(null);
     const [task, setTask] = useState(isTaskUpdate || defaultTask);
@@ -123,6 +125,12 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                 {tasks.length > 0 ? tasks.map((task, index) => (
                                     <>
                                         <tr key={task.id} className="flex justify-evenly py-4 relative text-left">
+                                            <AddFavourite
+                                                task={task}
+                                                setTask={setTask}
+                                                tasks={tasks}
+                                                setTasks={setTasks}
+                                            />
                                             <td className="">{index + 1}.  </td>
                                             <td className="md:-ml-16">{task.title}</td>
                                             <td className="w-16 lg:w-56">{task.description}</td>
@@ -133,7 +141,13 @@ const TaskContainer = ({ tasks, setTasks }) => {
                                                     )}
                                                 </ul>
                                             </td>
-                                            <td className={`${task.priority === "High" ? 'text-red-600' : task.priority === "Medium" ? 'text-yellow-600' : 'text-green-600'}`}>{task.priority}</td>
+                                            <td
+                                                className={`${task.priority === "High"
+                                                    ? 'text-red-600'
+                                                    : task.priority === "Medium"
+                                                        ? 'text-yellow-600'
+                                                        : 'text-green-600'}`}>
+                                                {task.priority}</td>
                                             <td className="flex flex-col gap-2">
                                                 <button onClick={() => { editTask(task) }}
                                                     className="bg-indigo-700 hover:bg-indigo-500 px-2 py-1 rounded-md transition-all duration-300">Edit</button>
